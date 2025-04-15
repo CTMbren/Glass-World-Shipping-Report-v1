@@ -60,7 +60,7 @@ function stopQR() {
 function startQR() {
   // Initialize new QRcode scanner and set configs
   html5QrcodeScanner = new Html5Qrcode("qr-reader");
-  const config = { fps: 30, qrbox: { width: 600, height: 400 } };
+  const config = { fps: 10, qrbox: { width: 600, height: 400 } };
 
   // Use rear camera as default
   html5QrcodeScanner.start(
