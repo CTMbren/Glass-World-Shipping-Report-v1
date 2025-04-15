@@ -15,7 +15,8 @@ let NEXTROOM = 0;
 let selectedButton = '';
 
 //QR Scanner
-var html5QrcodeScanner;
+let html5QrcodeScanner;
+let lastScan = '';
 
 const currentDate = new Date();
 
@@ -43,14 +44,20 @@ function setup() {
  * @param {*} decodedResult The Scanned QR Code Object
  */
 function onScanSuccess(decodedText, decodedResult) {
-  html5QrcodeScanner.pause();
-  let confirmation = confirm(`Code scanned = ${decodedText}`);
-  if (confirmation) {
-    console.log(confirmation);
-    addListItem(decodedText);
-  }
-  html5QrcodeScanner.resume();
+  console.log('scan!');
+  let scannedItem = document.getElementById('scannedItem');
+  scannedItem.textContent = 'Last scanned item: ' + decodedText;
+  lastScan = decodedText;
+  console.log(lastScan);
 }
+
+function addScannedItem() {
+  if (lastScan.length > 0) addListItem(lastScan);
+  let scannedItem = document.getElementById('scannedItem');
+  scannedItem.textContent = 'Last scanned item: ';
+  lastScan = '';
+}
+
 function stopQR() {
   html5QrcodeScanner.stop();
 
