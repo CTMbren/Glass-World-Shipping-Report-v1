@@ -1,0 +1,95 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  background-color: #eeeeee;
+}
+canvas {
+  display: block;
+}
+
+.gw-logo {
+  align-self: center;
+  height: 60px;
+  width: auto;
+}
+
+h1 {
+  margin: 50px 0 30px;
+  text-align: center;
+}
+
+.qrList {
+  background-color: white;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 10px 75px;
+}
+
+.qrItem {
+  background-color: white;
+  border: 1px solid #9fa4a8;
+  border-radius: 10px;
+  margin: 20px 0;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.qrItem-alert {
+  background-color: red;
+  border: 1px solid #9fa4a8;
+  border-radius: 10px;
+  margin: 20px 0;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.qrItem button {
+  background-color: #f85f5f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  border: 0;
+  height: 25px;
+  width: 25px;
+}
+.qrItem-alert button {
+  background-color: #f4d4d4;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  border: 0;
+  height: 25px;
+  width: 25px;
+}
+
+.buffer {
+  height: 500px;
+}
+
+#list {
+  background-color: white;
+}
+
+.qr-reader {
+  justify-content: center;
+}
+
+@media print
+{    
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}

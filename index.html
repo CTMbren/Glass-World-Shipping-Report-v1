@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/addons/p5.sound.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/noumanqamar450/alertbox@main/version/1.0.2/alertbox.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+      integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <meta charset="utf-8" />
+    <title>GW Shipping Report</title>
+  </head>
+  <body>
+    <img
+      class="gw-logo"
+      src="https://www.glassworld.ca/wp-content/uploads/2019/07/Asset-1.png"
+      alt="Glass World logo"
+    />
+    <main></main>
+    <script src="product.js"></script>
+    <script src="room.js"></script>
+    <script src="project.js"></script>
+    <script src="jobRoot.js"></script>
+    <script src="sketch.js"></script>
+ 
+
+    <!--INPUT FORM-->
+     <div class="container no-print">
+      <form id="infoForm">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="projectName">Project Name</label>
+            <input type="text" class="form-control" id="projectName" placeholder="Project Name">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="shippingDate">Shipping Date</label>
+            <input type="date" class="form-control" id="shippingDate">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="employeeName">Employee Loading Truck</label>
+            <input type="text" class="form-control" id="employeeName" placeholder="Employee Name">
+          </div>
+            <div class="form-group col-md-6">
+              <label for="loadingDate">Loading Date</label>
+              <input type="date" class="form-control" id="loadingDate">
+            </div>
+        </div>
+        <button type="button" class="btn btn-success" onclick="updateForm()">Update Shipping Form</button>
+      </form>
+    </div>
+
+    <!--QR-Reader Container-->
+    <div class="container no-print d-flex align-items-center py-4">
+      <p id="qr-reader" class="text-center"></p>
+    </div>
+   
+   <!--Report Buttons-->
+   <div class="container no-print d-flex justify-content-between align-items-center py-4">
+    <button type="button" class="btn btn-danger" onclick="stopQR()">Stop Scanning</button>
+    <button type="button" class="btn btn-primary" onclick="startQR()">Start Scanning</button>
+    <button type="button" class="btn btn-warning" onclick="loadExample()">Add example items</button>
+    <button type="button" class="btn btn-warning" onclick="saveList()">Print List</button>
+    <button type="button" class="btn btn-warning" onclick="toggleProductEdit()">Edit List</button>
+   </div>
+
+    <!-- RREPORT LIST-->
+    <div class="container" id="list">
+    <p class="h1 text-center list-header">GW Shipping Report</p>
+    <div class="row list-header">
+      <div class="col" id="reportProjectName">Project Name:</div>
+      <div class="col" id="reportShippingDate">Shipping On:</div>
+    </div>
+    <div class="row list-header" style="padding-bottom: 50px;">
+      <div class="col" id="reportEmployeeName">Loaded By:</div>
+      <div class="col" id="reportLoadingDate">Loaded On:</div>
+    </div>
+    <ul class="list-group" id="item-list">
+    </ul>
+    </div>
+
+
+
+    <!-- Remove Product Modal -->
+    <div class="modal fade" id="removeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Are you sure you want to remove:</h5>
+          </div>
+          <div class="modal-body" id="removeModal-body">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="removeSelectedItem()">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container no-print" style="height: 400px;"></div>
+
+  </body>
+  <footer class="footer mt-auto py-3 no-print">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start">
+                <span class="text-muted">&copy; 2025 Glass World. All rights reserved.</span>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item"><a href="https://www.glassworld.ca/contact-us/" target="_blank" class="text-muted">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</html>
