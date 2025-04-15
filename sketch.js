@@ -43,11 +43,16 @@ function setup() {
  * @param {*} decodedResult The Scanned QR Code Object
  */
 function onScanSuccess(decodedText, decodedResult) {
-  let confirmation = confirm(`Code scanned = ${decodedText}`);
-  if (confirmation) {
-    console.log(confirmation);
-    addListItem(decodedText);
-  }
+  //let confirmation = confirm(`Code scanned = ${decodedText}`);
+  //if (confirmation) {
+  //  console.log(confirmation);
+  //  addListItem(decodedText);
+  //}
+  setTimeout(function (){
+  
+  addListItem(decodedText);
+            
+  }, 2000);
 }
 function stopQR() {
   html5QrcodeScanner.stop();
