@@ -44,9 +44,9 @@ function setup() {
  */
 function onScanSuccess(decodedText, decodedResult) {
   //Make a beep sound when a new item is scanned
-  if (!(lastScan == decodedText)) {
+  //if (!(lastScan == decodedText)) {
     beepSound.play();
-  }
+  //}
   let scannedItem = document.getElementById('scannedItem');
   scannedItem.textContent = 'Last scanned item: ' + decodedText;
   lastScan = decodedText;
