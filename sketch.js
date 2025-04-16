@@ -18,6 +18,9 @@ let selectedButton = '';
 let html5QrcodeScanner;
 let lastScan = '';
 
+//QR Scanner Beep sound
+var beepSound = new Audio('beep.mp3');
+
 const currentDate = new Date();
 
 /**
@@ -30,12 +33,8 @@ function setup() {
   // Initialize new QRcode scanner and set configs
   startQR();
 
-
-  //Add event listeners to the inputs
-  document.getElementById('projectName').addEventListener("input", function(event) {
-    projectName = event.target.value;
-    console.log(projectName);
-  });
+  //Load any session list
+  loadSession();
 }
 
 /**
@@ -44,11 +43,13 @@ function setup() {
  * @param {*} decodedResult The Scanned QR Code Object
  */
 function onScanSuccess(decodedText, decodedResult) {
-  console.log('scan!');
+  //Make a beep sound when a new item is scanned
+  if (!(lastScan == decodedText)) {
+    beepSound.play();
+  }
   let scannedItem = document.getElementById('scannedItem');
   scannedItem.textContent = 'Last scanned item: ' + decodedText;
   lastScan = decodedText;
-  console.log(lastScan);
 }
 
 function addScannedItem() {
@@ -178,6 +179,8 @@ function rebuildList(){
     });
   });
 
+  //Save list to session storage
+  saveSession();
 }
 
 function hideRoom(id) {
@@ -207,7 +210,6 @@ function addListItem(decodedText) {
 
 function removeClick(id) {
   selectedButton = id;
-  console.log('Requesting removal of button: ' + id);
   //Change modal to be information for the selected item
   let itemInfo = document.getElementById('li'+id).innerText;
   // Remove the 'X' from the text of the child button
@@ -217,12 +219,65 @@ function removeClick(id) {
 }
 
 function removeSelectedItem() {
-  console.log('attemping removal from modal');
   //
   document.getElementById(selectedButton).remove();
   document.getElementById("li" + selectedButton).remove();
   jobRoot.removeProductById(selectedButton);
   rebuildList();
+}
+
+function saveSession() {
+
+  //Save form data to session
+  sessionStorage.setItem('projectName', projectName);
+  sessionStorage.setItem('employeeName', employeeName);
+  sessionStorage.setItem('shippingDate', shippingDate);
+  sessionStorage.setItem('loadingDate', loadingDate);
+
+  //Get all products
+  let allProducts = jobRoot.getAllProducts();
+  let textArray = [];
+
+  //Get scanned text from all products
+  for(let product of allProducts){
+    textArray.push(product.scannedText);
+  }
+
+  //Save list to session
+  sessionStorage.setItem('productList', JSON.stringify(textArray));
+}
+
+function loadSession() {
+  // Load form data
+  projectName = sessionStorage.getItem('projectName') || '';
+  employeeName = sessionStorage.getItem('employeeName') || '';
+  shippingDate = sessionStorage.getItem('shippingDate') || '';
+  loadingDate = sessionStorage.getItem('loadingDate') || '';
+
+  // Update the form inputs, if they exist
+  if (document.getElementById('projectName')) {
+    document.getElementById('projectName').value = projectName;
+    document.getElementById('employeeName').value = employeeName;
+    document.getElementById('shippingDate').value = shippingDate;
+    document.getElementById('loadingDate').value = loadingDate;
+  }
+
+  // Update report values
+  document.getElementById('reportProjectName').textContent = 'Project Name: ' + projectName;
+  document.getElementById('reportEmployeeName').textContent = 'Loaded By: ' + employeeName;
+  document.getElementById('reportShippingDate').textContent = 'Shipping On: ' + shippingDate;
+  document.getElementById('reportLoadingDate').textContent = 'Loaded On: ' + loadingDate;
+
+  // Get product list from session
+  const sessionList = sessionStorage.getItem('productList');
+
+  if (sessionList) {
+    const textArray = JSON.parse(sessionList);
+    for (let scannedText of textArray) {
+      addListItem(scannedText);
+    }
+  }
+
 }
 
 
@@ -233,20 +288,12 @@ function saveList() {
   window.print();
 }
 
-
-
 function updateForm() {
   // Get variables form form inputs
   projectName = document.getElementById('projectName').value;
   employeeName = document.getElementById('employeeName').value;
   shippingDate = document.getElementById('shippingDate').value;
   loadingDate = document.getElementById('loadingDate').value;
-
-  // Printout values
-  console.log(projectName);
-  console.log(employeeName);
-  console.log(shippingDate);
-  console.log(loadingDate);
 
   //Update report values
   let reportProjectName = document.getElementById('reportProjectName').textContent = 'Project Name: '+projectName;
@@ -256,6 +303,36 @@ function updateForm() {
 
   //Rebuild list
   rebuildList();
+}
+
+function exportList() {
+  //Get all products
+  let allProducts = jobRoot.getAllProducts();
+  let textArray = [];
+
+  //Get scanned text from all products
+  for(let product of allProducts){
+    textArray.push(product.scannedText);
+  }
+
+  //Turn array into paragraph of scanned items
+  let fileContent = textArray.join('\n');
+
+  // Create a blob from the text
+  const blob = new Blob([fileContent], { type: 'text/plain' });
+
+  // Create a temporary link element
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'Shipping Report.txt';
+
+  // Trigger the download
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  // Optionally, revoke the blob URL after download
+  URL.revokeObjectURL(link.href);
 }
 
 //Function to load dummy text

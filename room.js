@@ -12,7 +12,6 @@ class Room{
         this.roomProducts.push(product);
         this.roomProducts.sort((a,b) => a.getItemPrefix().localeCompare(b.getItemPrefix()));
         this.productCount ++;
-        console.log(this.productCount);
     }
 
     getProducts() {
@@ -32,7 +31,6 @@ class Room{
 
        //Update productCount
        this.productCount = this.roomProducts.length;
-       console.log("products remaining: " + this.productCount);
     }
 
     getProductCount() {
